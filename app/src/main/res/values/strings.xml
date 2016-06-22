@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CBS</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_menu_principal"></string>
+    <string name="leido">Leido</string>
+    <string name="volver">Volver</string>
+     <string name="no_location_detected">
+        Verifique que el GPS o Mi Ubicacion este activado para continuar.
+    </string>
+    <string name="agreement">Firma</string>
+    <string name="clear_pad">Borrar</string>
+    <string name="save_signature">Guardar Firma</string>
+
+</resources>

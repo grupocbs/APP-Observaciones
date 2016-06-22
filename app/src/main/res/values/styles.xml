@@ -1,0 +1,85 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Estilos para Edit Texts-->
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
+        <!--Estilos de ventana-->
+        <item name="android:windowFullscreen">true</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppTheme1" parent="@android:style/Theme.Holo.Light">
+
+
+
+
+     </style>
+
+     <style name="MyTheme.ActionBar.TabBar" parent="android:style/Widget.Holo.Light.ActionBar.TabBar">
+         <!-- This is an ORANGE background -->
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="MyTheme.ActionBar.TabView" parent="android:style/Widget.Holo.ActionBar.TabView">
+        <!-- This is a GREEN background -->
+        <item name="android:background">#1335e0</item>
+
+    </style>
+
+    <style name="MyTheme.ActionBar.TabText" parent="android:style/Widget.Holo.ActionBar.TabText">
+        <!-- This is a WHITE tab color -->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+    <style name="AppFullScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+    </style>
+
+
+
+
+    <!--Estilos personalizados para los componentes del formulario-->
+    <style name="Header" parent="@android:style/Widget.Holo.Light.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">#FF011268</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="Message" parent="@android:style/Widget.Holo.Light.TextView">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Separator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#FF011268</item>
+        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="EditTextStyle" parent="@android:style/Widget.Holo.Light.EditText">
+        <item name="android:background">@drawable/rectangle</item>
+        <item name="android:padding">6dp</item>
+    </style>
+    <style name="TextViewStyle" parent="@android:style/Widget.Holo.Light.TextView">
+        <item name="android:background">@drawable/rectangle</item>
+        <item name="android:padding">6dp</item>
+    </style>
+    <style name="SpinnerStyle" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/rectangle</item>
+        <item name="android:padding">6dp</item>
+    </style>
+
+
+</resources>
