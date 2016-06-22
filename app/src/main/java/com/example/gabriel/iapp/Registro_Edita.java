@@ -388,7 +388,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
                     try {
 
                         String url = shirt.getString(TAG_FIRMA).replace(" ", "%20");
-                        if(url.length()>0) {
+                        if (url.length() > 0) {
                             url = url.replace("\\\\127.0.0.1\\web_services", Login.SERVER);
                             url = url.replace("\\", "/");
 
@@ -415,15 +415,14 @@ public class Registro_Edita extends Activity implements OnClickListener,
                         }
 
 
-
                         txt_id.setText(shirt.getString(TAG_ID));
                         txt_fecha.setText(shirt.getString(TAG_FECHA));
                         ((Spinner) findViewById(R.id.txt_tipoob)).setSelection(selectSpinnerItemByValue(ArrayTipos, shirt.getString(TAG_TIPOOB)));
                         ((Spinner) findViewById(R.id.txt_codcli)).setSelection(selectSpinnerItemByValue(ArrayClientes, shirt.getString(TAG_CODCLI)));
                         txt_observ.setText(shirt.getString(TAG_OBSERV));
                         txt_correc.setText(shirt.getString(TAG_CORREC));
-
-                } catch (JSONException e) {
+                    }
+                 catch (JSONException e) {
                     e.printStackTrace();
                 }
                 }
@@ -568,7 +567,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
                 //spinnerArray = new String[JEquipos.length()];
                 for (int i = 0; i < JEquipos.length(); i++) {
                     JSONObject c = JEquipos.getJSONObject(i);
-                    ArrayClientes.add(new SpinnerItems_Clase(c.getString("id"), c.getString("id")+"-"+c.getString("cliente"),""));
+                    ArrayClientes.add(new SpinnerItems_Clase(c.getString("id"), c.getString("cliente"),""));
 
                 }
 
@@ -621,7 +620,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
 
                 for (int i = 0; i < JIdentifico.length(); i++) {
                     JSONObject c1 = JIdentifico.getJSONObject(i);
-                    ArrayTipos.add(new SpinnerItems_Clase(c1.getString("id"), c1.getString("id")+"-"+c1.getString("tipo"),c1.getString("texto")));
+                    ArrayTipos.add(new SpinnerItems_Clase(c1.getString("id"),c1.getString("tipo"),c1.getString("texto")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

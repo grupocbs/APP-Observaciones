@@ -78,7 +78,9 @@
     </style>
     <style name="SpinnerStyle" parent="@android:style/Widget.Holo.Light.Spinner">
         <item name="android:background">@drawable/rectangle</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:padding">6dp</item>
+
     </style>
 
 

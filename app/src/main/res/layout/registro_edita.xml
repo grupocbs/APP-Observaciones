@@ -86,6 +86,7 @@
                 android:text="Seleccione Tipo:"
                 android:id="@+id/textView6"
                 android:layout_weight="1"
+
               />
 
         </LinearLayout>
@@ -99,6 +100,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_weight="2"
+
+
             style="@style/SpinnerStyle"
             />
     </LinearLayout>
