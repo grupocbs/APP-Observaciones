@@ -13,14 +13,19 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.gabriel.iapp.Utils.Funcion_EnviarFotos;
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
+import com.example.gabriel.iapp.Utils.Tools;
 
 public class Registro_CargaFotos extends ActionBarActivity {
 
@@ -147,8 +153,6 @@ public class Registro_CargaFotos extends ActionBarActivity {
 				bit = Bitmap.createBitmap(bit , 0, 0, bit.getWidth(), bit.getHeight(), matrix, true);
 			}
 
-			//ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			//bit.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
 
 			path = Environment.getExternalStorageDirectory() + "/" + nombreImagen.getText().toString().trim().replace("ñ", "n") + ".jpg";
 
@@ -158,64 +162,6 @@ public class Registro_CargaFotos extends ActionBarActivity {
 			fOut.close(); // do not forget to close the stream
 
 			MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
-
-
-
-			//File destination = new File(Environment.getExternalStorageDirectory(), nombreImagen.getText().toString().trim().replace("ñ", "n") + ".jpg");
-
-/*
-			File destination = new File(Environment.getExternalStorageDirectory(), nombreImagen.getText().toString().trim().replace("ñ", "n") + ".jpg");
-
-			FileOutputStream fo;
-			try {
-				destination.createNewFile();
-				fo = new FileOutputStream(destination);
-				fo.write(bytes.toByteArray());
-				fo.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			/*int rotate = 0;
-			try {
-				ExifInterface exif = new ExifInterface(
-						destination.getAbsolutePath());
-
-				int orientation = exif.getAttributeInt(
-						ExifInterface.TAG_ORIENTATION,
-						ExifInterface.ORIENTATION_NORMAL);
-				Log.d("rotate", String.valueOf(orientation));
-				switch (orientation) {
-					case ExifInterface.ORIENTATION_ROTATE_270:
-						rotate = 270;
-						Log.d("rotate", "270");
-						break;
-					case ExifInterface.ORIENTATION_ROTATE_180:
-						rotate = 180;
-						Log.d("rotate", "180");
-						break;
-					case ExifInterface.ORIENTATION_ROTATE_90:
-						rotate = 90;
-						Log.d("rotate", "90");
-						break;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				Log.d("rotate", "EX");
-			}
-			Matrix matrix = new Matrix();
-			matrix.postRotate(rotate);
-			Log.d("rotate", String.valueOf(rotate));
-			bit = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(), bit.getHeight(), matrix, true);
-
-			//bit= getResizedBitmap(bit,800,600);*/
-			//bit = BitmapFactory.decodeFile(destination.getPath());
-
-
-
-
 
 
 		}  catch (FileNotFoundException e) {
@@ -293,8 +239,24 @@ public class Registro_CargaFotos extends ActionBarActivity {
 	}
 	private void serverUpdate() {
 
-		if (file.exists()) new ServerUpdate().execute();
-		finish();
+		if (Tools.isOnline((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE))) {
+			if (file.exists()) new ServerUpdate().execute();
+			finish();
+		}
+
+		else {
+			AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+			alertDialog.setTitle("Conectando...");
+			alertDialog.setMessage("Verifique conexion a Internet.");
+			alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					((EditText) findViewById(R.id.txt_usuario)).findFocus();
+				}
+			});
+			alertDialog.show();
+		}
+
 	}
 
 	class ServerUpdate extends AsyncTask<String, String, String> {

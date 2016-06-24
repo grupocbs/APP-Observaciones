@@ -49,6 +49,7 @@ import java.util.List;
 
 
 import com.example.gabriel.iapp.Utils.Funcion_EnviarMail;
+import com.example.gabriel.iapp.Utils.Tools;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -151,7 +152,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
         }
 
 
-        if(isOnline()) {
+        if (Tools.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
             Bundle bundle=getIntent().getExtras();
             CargarCombos();
 
@@ -246,16 +247,12 @@ public class Registro_Edita extends Activity implements OnClickListener,
             dialogo.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                  //  startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    finish();
                 }
             });
 
             dialogo.show();
-
-
-            //Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-
-
 
         }
     }
@@ -313,18 +310,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
 
         return super.onOptionsItemSelected(item);
     }
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                .isConnectedOrConnecting()
-                || cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                .isConnectedOrConnecting())
-
-            return true;
-        else
-            return false;
-    }
 
     //carga de datos
     public void llenarDatos(){
@@ -679,7 +665,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
     //botones
     public void guardarCerrar(View view) {
 
-        if(isOnline()) {
+        if (Tools.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
 
             txt_fecha = (TextView) findViewById(R.id.txt_fecha);
             txt_tipoob = (Spinner) findViewById(R.id.txt_tipoob);

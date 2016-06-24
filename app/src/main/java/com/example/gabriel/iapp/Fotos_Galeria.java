@@ -7,8 +7,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.graphics.Bitmap;
@@ -25,6 +30,7 @@ import android.widget.GridView;
 import com.example.gabriel.iapp.Utils.Fotos_Clase;
 import com.example.gabriel.iapp.Utils.Fotos_Lista;
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
+import com.example.gabriel.iapp.Utils.Tools;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -106,7 +112,26 @@ public class Fotos_Galeria extends ActionBarActivity {
     }
 
     private void Carga_Grilla() {
-        new GetProductDetails().execute();
+        if (Tools.isOnline((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE))) {
+            new GetProductDetails().execute();
+        }
+
+            else {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Conectando...");
+            alertDialog.setMessage("Verifique conexion a Internet.");
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ((EditText) findViewById(R.id.txt_usuario)).findFocus();
+                }
+            });
+            alertDialog.show();
+        }
+
+
+
+
 
 
     }

@@ -11,9 +11,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,10 +25,16 @@ import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
+import com.example.gabriel.iapp.Utils.Tools;
+
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +57,7 @@ public class Login extends AppCompatActivity {
     public static String MAIL = "";
     public static String IP = "";
     public static String PUERTO = "";
+    public static HttpURLConnection con = null;
 
 
 
@@ -69,32 +78,46 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        SharedPreferences pref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String username = pref.getString(PREF_USERNAME, null);
-        String password = pref.getString(PREF_PASSWORD, null);
-        String ip = pref.getString(PREF_IP, null);
-        String puerto = pref.getString(PREF_PUERTO, null);
-        String mail = pref.getString(PREF_MAIL, null);
-
-
-        if (username != null && password != null && ip != null) {
-            ((EditText) findViewById(R.id.txt_usuario)).setText(username);
-            ((EditText) findViewById(R.id.txt_contraseña)).setText(password);
-            ((EditText) findViewById(R.id.txt_ip)).setText(ip);
-            ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.INVISIBLE);
-            ((EditText) findViewById(R.id.txt_puerto)).setText(puerto);
-            ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.INVISIBLE);
-        }
         try {
+
+
+            SharedPreferences pref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String username = pref.getString(PREF_USERNAME, null);
+            String password = pref.getString(PREF_PASSWORD, null);
+            String ip = pref.getString(PREF_IP, null);
+            String puerto = pref.getString(PREF_PUERTO, null);
+            String mail = pref.getString(PREF_MAIL, null);
+
+
+            if (username != null && password != null && ip != null) {
+                ((EditText) findViewById(R.id.txt_usuario)).setText(username);
+                ((EditText) findViewById(R.id.txt_contraseña)).setText(password);
+                ((EditText) findViewById(R.id.txt_ip)).setText(ip);
+                ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.INVISIBLE);
+                ((EditText) findViewById(R.id.txt_puerto)).setText(puerto);
+                ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.INVISIBLE);
+            }
+
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
 
             ((TextView) findViewById(R.id.txt_version)).setText("Versión: " + version);
-        }
-        catch (PackageManager.NameNotFoundException ex)
-        {
+
+
+            if (android.os.Build.VERSION.SDK_INT > 9) {
+                StrictMode.ThreadPolicy policy =
+                        new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
 
         }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Toast.makeText(Login.this, "Error:" + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+
 
 
     }
@@ -104,11 +127,7 @@ public class Login extends AppCompatActivity {
         MiLoguin();
 
     }
-    public String getIMEI(Activity activity) {
-        TelephonyManager telephonyManager = (TelephonyManager) activity
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        return telephonyManager.getDeviceId();
-    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -138,7 +157,7 @@ public class Login extends AppCompatActivity {
     private void MiLoguin() {
 
 
-        if (isOnline()) {
+        if (Tools.isOnline((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE))) {
 
 
             if (((EditText) findViewById(R.id.txt_usuario)).getText().toString().length() > 0 && ((EditText) findViewById(R.id.txt_contraseña)).getText().toString().length() > 0 && ((EditText) findViewById(R.id.txt_ip)).getText().toString().length() > 0 && ((EditText) findViewById(R.id.txt_puerto)).getText().toString().length() > 0) {
@@ -147,11 +166,14 @@ public class Login extends AppCompatActivity {
                 contraseña=((EditText) findViewById(R.id.txt_contraseña)).getText().toString();
                 ip=((EditText) findViewById(R.id.txt_ip)).getText().toString();
                 puerto=((EditText) findViewById(R.id.txt_puerto)).getText().toString();
-                imei=getIMEI(Login.this);
+                imei=Tools.getIMEI(Login.this);
+
 
                 SERVER="http://" + ip.replace(" ","") + ":" + puerto.replace(" ","");
 
                 new Logueo().execute();
+
+
 
             } else {
                 AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -181,20 +203,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                .isConnectedOrConnecting()
-                || cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                .isConnectedOrConnecting())
-
-            return true;
-        else
-            return false;
-    }
-
-
 
     class Logueo extends AsyncTask<String, String, String> {
         JSONObject json;
@@ -211,51 +219,84 @@ public class Login extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 public void run() {
 
-                    List<NameValuePair> params = new ArrayList<NameValuePair>();
-                    params.add(new BasicNameValuePair("us", usuario));
-                    params.add(new BasicNameValuePair("pass", contraseña));
-                    params.add(new BasicNameValuePair("ip", ip));
-                    params.add(new BasicNameValuePair("puerto", puerto));
-                    params.add(new BasicNameValuePair("imei", imei));
 
-                    json = jParser.makeHttpRequest(SERVER + "/" + WS, "GET", params);
-                    if (json != null) {
+                    try {
+
+                        URL url = new URL(SERVER + "/" + WS);
                         try {
+                            con = (HttpURLConnection)url.openConnection();
+                            con.setConnectTimeout(2000);
+                            if(con.getResponseCode()==HttpURLConnection.HTTP_OK) {
 
-                            if (json.toString().contains("error")) {
-                                log = false;
-                            } else {
-                                log = true;
-                                USUARIO = json.getString("us").replace(" ", "");
-                                CONTRASEÑA = json.getString("pass").replace(" ", "");
-                                IP = json.getString("ip").replace(" ", "");
-                                PUERTO = json.getString("puerto").replace(" ", "");
-                                MAIL = json.getString("mail").replace(" ", "");
-                                SUPERVISOR = json.getString("supervisor").replace(" ", "");
+                                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                                params.add(new BasicNameValuePair("us", usuario));
+                                params.add(new BasicNameValuePair("pass", contraseña));
+                                params.add(new BasicNameValuePair("ip", ip));
+                                params.add(new BasicNameValuePair("puerto", puerto));
+                                params.add(new BasicNameValuePair("imei", imei));
 
-                                getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                                        .edit()
-                                        .putString(PREF_USERNAME, USUARIO)
-                                        .putString(PREF_PASSWORD, CONTRASEÑA)
-                                        .putString(PREF_IP, IP)
-                                        .putString(PREF_PUERTO, PUERTO)
-                                        .commit();
+
+
+                                json = jParser.makeHttpRequest(SERVER + "/" + WS, "GET", params);
+                                if (json != null) {
+                                    try {
+
+                                        if (json.toString().contains("error")) {
+                                            log = false;
+                                        } else {
+                                            log = true;
+                                            USUARIO = json.getString("us").replace(" ", "");
+                                            CONTRASEÑA = json.getString("pass").replace(" ", "");
+                                            IP = json.getString("ip").replace(" ", "");
+                                            PUERTO = json.getString("puerto").replace(" ", "");
+                                            MAIL = json.getString("mail").replace(" ", "");
+                                            SUPERVISOR = json.getString("supervisor").replace(" ", "");
+
+                                            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                                                    .edit()
+                                                    .putString(PREF_USERNAME, USUARIO)
+                                                    .putString(PREF_PASSWORD, CONTRASEÑA)
+                                                    .putString(PREF_IP, IP)
+                                                    .putString(PREF_PUERTO, PUERTO)
+                                                    .commit();
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+
+                                        Toast.makeText(Login.this, "Respuesta de Servidor incorrecta:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.VISIBLE);
+                                        ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
+                                    }
+                                } else {
+
+                                    Toast.makeText(Login.this, "Respuesta de Servidor incorrecta", Toast.LENGTH_LONG).show();
+                                    ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.VISIBLE);
+                                    ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
+                                }
+
+
+
                             }
-
-
-                        } catch (JSONException e) {
-                             e.printStackTrace();
-
-                            Toast.makeText(Login.this, "Servidor no disponible", Toast.LENGTH_LONG).show();
-                            ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.VISIBLE);
-                            ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
+                            else
+                            {
+                                Toast.makeText(Login.this, "Servidor No disponible", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    } else {
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+                            Toast.makeText(Login.this, "No se encuentra el Servidor:" + ex.getMessage(), Toast.LENGTH_LONG).show();
+                        }
 
-                        Toast.makeText(Login.this, "Servidor no disponible", Toast.LENGTH_LONG).show();
-                        ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.VISIBLE);
-                        ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
                     }
+                    catch (MalformedURLException ex)
+                    {
+                        ex.printStackTrace();
+                       // Toast.makeText(Login.this, "Direccion de Servidor incorrecta:" + ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
             return null;
@@ -285,7 +326,7 @@ public class Login extends AppCompatActivity {
                             ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
                         }
                     } else {
-                        Toast.makeText(Login.this, "Servidor no disponible", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this, "Respuesta de Servidor incorrecta", Toast.LENGTH_LONG).show();
                         ((EditText) findViewById(R.id.txt_ip)).setVisibility(View.VISIBLE);
                         ((EditText) findViewById(R.id.txt_puerto)).setVisibility(View.VISIBLE);
                     }

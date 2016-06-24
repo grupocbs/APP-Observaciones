@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
+import com.example.gabriel.iapp.Utils.Tools;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -54,7 +56,7 @@ public class Listado_Pendientes extends ListFragment{
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
 
-        if(isOnline()) {
+        if (Tools.isOnline((ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE))) {
             listar();
         }else {
             AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
@@ -187,17 +189,7 @@ public class Listado_Pendientes extends ListFragment{
         }
 
     }
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                .isConnectedOrConnecting()
-                || cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                .isConnectedOrConnecting())
-            return true;
-        else
-            return false;
-    }
 
 
 

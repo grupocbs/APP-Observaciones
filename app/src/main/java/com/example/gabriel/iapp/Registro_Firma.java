@@ -1,10 +1,14 @@
 package com.example.gabriel.iapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,10 +19,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.example.gabriel.iapp.Utils.Firma.SignaturePad;
 import com.example.gabriel.iapp.Utils.Funcion_EnviarFotos;
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
+import com.example.gabriel.iapp.Utils.Tools;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -97,8 +103,28 @@ public class Registro_Firma extends Activity {
                    photo = new File(Environment.getExternalStorageDirectory(), nombreImagen);
                    saveBitmapToJPG(signatureBitmap, photo);
                    scanMediaFile(photo);
-                   new SubirFirma().execute();
-                   finish();
+
+
+                   if (Tools.isOnline((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE))) {
+                       new SubirFirma().execute();
+                       finish();
+                   }
+
+                   else {
+                       AlertDialog alertDialog = new AlertDialog.Builder(Registro_Firma.this).create();
+                       alertDialog.setTitle("Conectando...");
+                       alertDialog.setMessage("Verifique conexion a Internet.");
+                       alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                               ((EditText) findViewById(R.id.txt_usuario)).findFocus();
+                           }
+                       });
+                       alertDialog.show();
+                   }
+
+
+
                }
                  catch (IOException e) {
                     e.printStackTrace();

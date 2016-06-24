@@ -1,7 +1,9 @@
 package com.example.gabriel.iapp;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -16,12 +18,14 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.gabriel.iapp.Utils.Funcion_JSONParser;
 import com.example.gabriel.iapp.Utils.SpinnerItems_Clase;
+import com.example.gabriel.iapp.Utils.Tools;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -51,10 +55,23 @@ public class Principal extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        if(isOnline()) {
+        if (Tools.isOnline((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE))) {
             new CargarComboUsuarios().execute();
-
         }
+
+        else {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Conectando...");
+            alertDialog.setMessage("Verifique conexion a Internet.");
+            alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ((EditText) findViewById(R.id.txt_usuario)).findFocus();
+                }
+            });
+            alertDialog.show();
+        }
+
 
         switch (Login.SUPERVISOR)
         {
@@ -79,31 +96,9 @@ public class Principal extends Activity {
 
 
     }
-    private int selectSpinnerItemByValue(ArrayList ar, String value) {
-
-        int index=0;
-        for (int i = 0; i < ar.size(); i++) {
-            if (((SpinnerItems_Clase)ar.get(i)).getName().equals(value)) {
-                index=i;
-            }
-        }
-
-        return index;
-    }
 
 
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                .isConnectedOrConnecting()
-                || cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                .isConnectedOrConnecting())
-
-            return true;
-        else
-            return false;
-    }
 
 
 
@@ -191,7 +186,7 @@ public class Principal extends Activity {
                         }
                     });
 
-                    ((Spinner) findViewById(R.id.txt_usuario)).setSelection(selectSpinnerItemByValue(ArrayUsuarios,Login.USUARIO));
+                    ((Spinner) findViewById(R.id.txt_usuario)).setSelection(Tools.selectSpinnerItemByValue(ArrayUsuarios,Login.USUARIO));
                 }
             });
         }
