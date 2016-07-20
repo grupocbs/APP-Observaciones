@@ -147,12 +147,23 @@ public class Registro_CargaFotos extends ActionBarActivity {
 
 		try {
 			bit = android.provider.MediaStore.Images.Media.getBitmap(cr, output);
+			Matrix matrix = new Matrix();
+			float scaleWidth;
+			float scaleHeight;
 			if (bit.getWidth() > bit.getHeight()) {
-				Matrix matrix = new Matrix();
 				matrix.postRotate(90);
-				bit = Bitmap.createBitmap(bit , 0, 0, bit.getWidth(), bit.getHeight(), matrix, true);
+				scaleWidth = ((float) 1280) / bit.getWidth();
+				scaleHeight = ((float) 720) / bit.getHeight();
+			}
+			else
+			{
+				scaleWidth = ((float) 720) / bit.getWidth();
+				scaleHeight = ((float) 1280) / bit.getHeight();
 			}
 
+			matrix.postScale(scaleWidth,scaleHeight);
+
+			bit = Bitmap.createBitmap(bit, 0, 0, bit.getWidth(), bit.getHeight(), matrix, true);
 
 			path = Environment.getExternalStorageDirectory() + "/" + nombreImagen.getText().toString().trim().replace("ñ", "n") + ".jpg";
 
