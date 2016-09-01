@@ -42,6 +42,7 @@ public class Fotos_Galeria extends ActionBarActivity {
     private GridView gridView;
     private Fotos_Lista gridAdapter;
     String codobs="";
+    String usuario="";
     ArrayList<HashMap<String, String>> ObservacionesListF;
     private static String WS_all_observaciones = "App_OPOBOJ_capturas.aspx";
     private static final String TAG_REGISTROS = "registros";
@@ -63,6 +64,7 @@ public class Fotos_Galeria extends ActionBarActivity {
 
         Bundle bundle=getIntent().getExtras();
         codobs = bundle.getString("codobs");
+        usuario = bundle.getString("usuario");
         edita = bundle.getString("EDITA");
 
 
@@ -180,8 +182,8 @@ public class Fotos_Galeria extends ActionBarActivity {
 
             imageItems.clear();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("us", Login.USUARIO));
             params.add(new BasicNameValuePair("codobs", codobs));
+            params.add(new BasicNameValuePair("us", usuario));
 
             JSONObject jsonF = jParserF.makeHttpRequest(Login.SERVER + "/" + WS_all_observaciones, "GET", params);
 

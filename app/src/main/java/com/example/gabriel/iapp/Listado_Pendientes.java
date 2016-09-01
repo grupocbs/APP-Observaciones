@@ -77,11 +77,14 @@ public class Listado_Pendientes extends ListFragment{
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
 
-        TextView c = (TextView) v.findViewById(R.id.lblID);
         Intent mIntent= new Intent(getActivity().getApplicationContext(), Registro_Edita.class);
 
-        mIntent.putExtra("ID", c.getText().toString());
+        TextView i = (TextView) v.findViewById(R.id.lblID);
+
+        mIntent.putExtra("ID", i.getText().toString());
+        mIntent.putExtra("USUARIO", Principal.USUARIO);
         mIntent.putExtra("EDITA", "1");
+
         startActivityForResult(mIntent, 100);
 
     }

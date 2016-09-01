@@ -111,6 +111,7 @@ public class Listado extends FragmentActivity {
         actionBar.removeAllTabs();
         actionBar.addTab(actionBar.newTab().setText("Pendientes").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Finalizados").setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText("Compartidos").setTabListener(tabListener));
 
 
 

@@ -7,8 +7,8 @@ android {
         applicationId "com.example.gabriel.iapp"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
     }
     dexOptions {
         incremental true

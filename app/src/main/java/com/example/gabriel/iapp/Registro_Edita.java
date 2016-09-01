@@ -68,6 +68,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
     private ImageView imageFirma;
 
     private String id;
+    private String usuario;
     private String fecha="";
     private String tipo="";
     private String cliente="";
@@ -156,7 +157,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
             Bundle bundle=getIntent().getExtras();
             CargarCombos();
 
-            if(bundle!=null && bundle.getString("ID")!=null) {
+            if(bundle!=null && bundle.getString("ID")!=null && bundle.getString("USUARIO")!=null) {
                 alta=false;
                 edita = bundle.getString("EDITA");
 
@@ -170,6 +171,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
                     ((Button) findViewById(R.id.btn_agregarfirma)).setVisibility(View.INVISIBLE);
                 }
                 id = bundle.getString("ID");
+                usuario = bundle.getString("USUARIO");
                 llenarDatos();
             }
             else
@@ -178,10 +180,6 @@ public class Registro_Edita extends Activity implements OnClickListener,
                 ((Button) findViewById(R.id.btn_agregarcaptura)).setVisibility(View.INVISIBLE);
                 ((Button) findViewById(R.id.btn_agregarfirma)).setVisibility(View.INVISIBLE);
             }
-
-
-
-
         }
         else {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -335,7 +333,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
                     try {
                         // Building Parameters
                         List<NameValuePair> params = new ArrayList<NameValuePair>();
-                        params.add(new BasicNameValuePair("us", Principal.USUARIO));
+                        params.add(new BasicNameValuePair("us", usuario));
                         params.add(new BasicNameValuePair("id", id));
 
                         JSONObject json = jsonParser.makeHttpRequest(Login.SERVER + "/" + WS_ultimoid, "GET", params);
@@ -745,6 +743,7 @@ public class Registro_Edita extends Activity implements OnClickListener,
         Intent mIntent= new Intent(this, Fotos_Galeria.class);
         mIntent.putExtra("EDITA", edita);
         mIntent.putExtra("codobs",id);
+        mIntent.putExtra("usuario",usuario);
         startActivityForResult(mIntent, 100);
     }
     public void agregar_firma(View view){

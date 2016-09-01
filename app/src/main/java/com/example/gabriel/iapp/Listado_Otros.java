@@ -27,16 +27,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Listado_Finalizados extends ListFragment{
+public class Listado_Otros extends ListFragment{
 
-    public static String ESTADO="F";
+
     ArrayList<HashMap<String, String>> ObservacionesListF;
-    private static String WS = "App_OPOBOJ_lista.aspx";
+    private static String WS = "App_OPOBOJ_listaOtros.aspx";
     private static final String TAG_REGISTROS = "registros";
     private static final String TAG_ID = "ID";
     private static final String TAG_FECHA = "fecha";
     private static final String TAG_TIPO = "tipo";
     private static final String TAG_CLIENTE = "cliente";
+    private static final String TAG_ESTADO = "estado";
+    private static final String TAG_INFORMO = "informo";
     private ProgressDialog pDialog;
 
 
@@ -48,7 +50,7 @@ public class Listado_Finalizados extends ListFragment{
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
 
-        return inflater.inflate(R.layout.listado_finalizados, container, false);
+        return inflater.inflate(R.layout.listado_otros, container, false);
 
     }
 
@@ -77,13 +79,12 @@ public class Listado_Finalizados extends ListFragment{
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-
         Intent mIntent= new Intent(getActivity().getApplicationContext(), Registro_Edita.class);
 
         TextView i = (TextView) v.findViewById(R.id.lblID);
-
+        TextView us = (TextView) v.findViewById(R.id.lblINFORMO);
         mIntent.putExtra("ID", i.getText().toString());
-        mIntent.putExtra("USUARIO", Principal.USUARIO);
+        mIntent.putExtra("USUARIO", us.getText().toString());
         mIntent.putExtra("EDITA", "0");
 
         startActivityForResult(mIntent, 100);
@@ -101,10 +102,6 @@ public class Listado_Finalizados extends ListFragment{
             // if result code 100
             if (resultCode == 100) {
 
-              //  Log.d("Listado", "cambio el dataset");
-               // ObservacionesListF.clear();
-
-               //new GetProductDetails().execute();
             }
         }
 
@@ -129,7 +126,6 @@ public class Listado_Finalizados extends ListFragment{
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("us", Principal.USUARIO));
-            params.add(new BasicNameValuePair("estado", ESTADO));
 
 
             JSONObject jsonF = jParserF.makeHttpRequest(Login.SERVER + "/" + WS, "GET", params);
@@ -146,6 +142,8 @@ public class Listado_Finalizados extends ListFragment{
                     String fecha = c.getString(TAG_FECHA);
                     String tipo = c.getString(TAG_TIPO);
                     String cliente=c.getString(TAG_CLIENTE);
+                    String estado=c.getString(TAG_ESTADO);
+                    String informo=c.getString(TAG_INFORMO);
 
                     // creating new HashMap
                     HashMap<String, String> map = new HashMap<String, String>();
@@ -154,6 +152,8 @@ public class Listado_Finalizados extends ListFragment{
                     map.put(TAG_FECHA, fecha);
                     map.put(TAG_TIPO, tipo);
                     map.put(TAG_CLIENTE, cliente);
+                    map.put(TAG_ESTADO, estado);
+                    map.put(TAG_INFORMO, informo);
 
                     ObservacionesListF.add(map);
                 }
@@ -165,6 +165,7 @@ public class Listado_Finalizados extends ListFragment{
 
             return null;
         }
+
 
 
         protected void onPostExecute(String file_url) {
@@ -180,9 +181,9 @@ public class Listado_Finalizados extends ListFragment{
                         ListAdapter adapter = new SimpleAdapter(
                                 getActivity(),
                                 ObservacionesListF,
-                                R.layout.fila_finalizado,
-                                new String[]{TAG_FECHA, TAG_CLIENTE, TAG_TIPO, TAG_ID},
-                                new int[]{R.id.lblFECHA, R.id.lblCLIENTE, R.id.lblTIPO, R.id.lblID});
+                                R.layout.fila_otros,
+                                new String[]{TAG_FECHA, TAG_CLIENTE, TAG_TIPO, TAG_ID, TAG_ESTADO, TAG_INFORMO},
+                                new int[]{R.id.lblFECHA, R.id.lblCLIENTE, R.id.lblTIPO, R.id.lblID,R.id.lblESTADO, R.id.lblINFORMO});
 
                         setListAdapter(adapter);
                     }

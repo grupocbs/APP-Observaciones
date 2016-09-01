@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.gabriel.iapp.Listado_Finalizados;
+import com.example.gabriel.iapp.Listado_Otros;
 import com.example.gabriel.iapp.Listado_Pendientes;
 
 
@@ -23,6 +24,8 @@ public class Listado_TabPagerAdapter extends FragmentPagerAdapter  {
                 return new Listado_Pendientes();
             case 1:
                 return new Listado_Finalizados();
+            case 2:
+                return new Listado_Otros();
             default: return null;
 
 
@@ -34,7 +37,7 @@ public class Listado_TabPagerAdapter extends FragmentPagerAdapter  {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return 2; //No of Tabs
+        return 3; //No of Tabs
     }
 
 
